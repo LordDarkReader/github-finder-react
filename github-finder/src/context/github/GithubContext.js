@@ -9,25 +9,12 @@ const GITHUB_TOKEN = process.env.REACT_APP_GITHUB_TOKEN;
 export const GithubProvider = ({children}) => {
     const initialState = {
       users: [],
+      user: {},
       loading: false
     };
 
     const [state, dispatch] = useReducer(githubReducer, initialState);
 
-    // const fetchUsers = async () => {
-    //     setLoading();
-    //     const response = await fetch(`https://api.github.com/users`, {
-    //         headers: {
-    //             Authorization: `token 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`
-    //         }
-    //     });
-    //     const data = await  response.json();
-    //
-    //     dispatch({
-    //         type: 'GET_USERS',
-    //         payload: data,
-    //     });
-    // };
 
     const searchUsers = async (text) => {
         setLoading();
@@ -39,10 +26,34 @@ export const GithubProvider = ({children}) => {
                 Authorization: `token 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`
             }
         });
-        const {items} = await  response.json();
+
+        if (response.status === 401) {
+            window.location = '/notfound'
+        } else {
+            console.log("sdasdsa");
+
+            const data = await  response.json();
+            console.log(data);
+            dispatch({
+                type: 'GET_USERS',
+                payload: data.items,
+            });
+        }
+    };
+
+
+    const getUser = async (login) => {
+        setLoading();
+
+        const response = await fetch(`https://api.github.com/user/${login}`, {
+            headers: {
+                Authorization: `token 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`
+            }
+        });
+        const {items} = await response.json();
 
         dispatch({
-            type: 'GET_USERS',
+            type: 'GET_USER',
             payload: items,
         });
     };
@@ -58,8 +69,10 @@ export const GithubProvider = ({children}) => {
     return <GithubContext.Provider value={{
         users: state.users,
         loading: state.loading,
+        user: state.user,
         searchUsers,
-        clearUsers
+        clearUsers,
+        getUser
     }}>
         {children}
     </GithubContext.Provider>
