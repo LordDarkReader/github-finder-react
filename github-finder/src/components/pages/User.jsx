@@ -1,33 +1,35 @@
 import React, {useEffect, useContext} from 'react';
 import GithubContext from '../../context/github/GithubContext';
 import {useParams, Link} from 'react-router-dom';
-import {FaCodepen, FaStore, FaUserFriends, FaUsers} from 'react-icons/fa'
 import Spinner from '../layout/Spinner';
+import RepoList from '../repos/RepoList';
 
 function User() {
-    const {getUser, user, loading} = useContext(GithubContext);
+    const {getUser, user, loading, getUserRepos, repos} = useContext(GithubContext);
 
     const params = useParams();
 
     useEffect(() => {
-        getUser(params.login)
+        getUser(params.login);
+        getUserRepos(params.login);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
-    // const {
-    //     name,
-    //     company,
-    //     avatar_url,
-    //     location,
-    //     bio,
-    //     blog,
-    //     login,
-    //     html_url,
-    //     followers,
-    //     following,
-    //     public_repos,
-    //     public_gists,
-    //     hireable
-    // } = user;
+    const {
+        name,
+        company,
+        avatar_url,
+        location,
+        bio,
+        blog,
+        login,
+        html_url,
+        followers,
+        following,
+        public_repos,
+        public_gists,
+        hireable
+    } = user;
 
     if (loading) {
         return <Spinner/>
@@ -43,13 +45,18 @@ function User() {
                     <div className='custom-card-image mb-6 md:mb-0'>
                         <div className='rounded-lg shadow-xl card image-full'>
                             <figure>
-                                img
+                                <img
+                                    src={avatar_url}
+                                    className='round-img'
+                                    alt=''
+                                    style={{ width: '150px' }}
+                                />
                             </figure>
                             <div className='card-body justify-end'>
                                 <h2 className='card-title mb-0'>
                                     name
                                 </h2>
-                                <p>login</p>
+                                <p>{login}</p>
                             </div>
                         </div>
                     </div>
@@ -58,22 +65,24 @@ function User() {
                         <div className='mb-6'>
                             <h1 className='text-3xl card-title'>
                                 <div className='ml-2 mr-1 badge badge-success'>
-                                   type
+                                    {user.type}
                                 </div>
 
                             </h1>
-                            <p>bio</p>
+                            <p>{bio}</p>
                             <div className='mt-4 card-actions'>
                                 <a href={"/"} target='_blank' rel='noreferrer' className='btn btn-outline'>visit github profile</a>
                             </div>
                         </div>
 
                         <div className='w-full rounded-lg shadow-md bg-base-100 stats'>
-                            location
+                            {location}
                         </div>
                     </div>
 
                 </div>
+                <RepoList repos={repos}/>
+
             </div>
         </>
     )
