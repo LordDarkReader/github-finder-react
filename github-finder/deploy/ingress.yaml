@@ -1,18 +1,50 @@
+#apiVersion: networking.k8s.io/v1
+#kind: Ingress
+#metadata:
+#  name: github-finder
+#  namespace: default
+#spec:
+#  ingressClassName: nginx
+#  rules:
+#    - host: github-finder
+#      http:
+#        paths:
+#          - path: /
+#            pathType: Prefix
+#            backend:
+#              service:
+#                name: github-finder
+#                port:
+#                  number: 8080
+
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   name: github-finder
-  namespace: default
+  annotations:
+    nginx.ingress.kubernetes.io/rewrite-target: /$2
 spec:
-  ingressClassName: nginx
+  defaultBackend:
+    service:
+      name: github-finder
+      port:
+        number: 80
   rules:
-    - host: github-finder
+    - host: github-finder # domain (i.e. need to change host table)
       http:
-        paths:
+        paths: # specified path below, only be working when there is more than 1 path; If only having 1 path, it's always using / as path
           - path: /
             pathType: Prefix
             backend:
               service:
-                name: github-finder
+                name: github-finder # internal service
                 port:
-                  number: 8080
+                  number: 8080 # port number that internal service exposes
+          - path: /e($|/)(.*)
+            pathType: Prefix
+            backend:
+              service:
+                name: express-service # internal service
+                port:
+                  number: 3000 # port number that internal service exposes
+
