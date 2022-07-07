@@ -28,7 +28,7 @@ spec:
     service:
       name: github-finder
       port:
-        number: 80
+        number: 32047
   rules:
     - host: github-finder # domain (i.e. need to change host table)
       http:
@@ -39,7 +39,7 @@ spec:
               service:
                 name: github-finder # internal service
                 port:
-                  number: 80 # port number that internal service exposes
+                  number: 32047 # port number that internal service exposes
           - path: /e($|/)(.*)
             pathType: Prefix
             backend:
