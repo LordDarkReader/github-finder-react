@@ -1,0 +1,18 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: github-finder
+  namespace: default
+spec:
+  ingressClassName: nginx
+  rules:
+    - host: github-finder
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: github-finder
+                port:
+                  number: 8080
