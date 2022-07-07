@@ -39,7 +39,7 @@ spec:
               service:
                 name: github-finder # internal service
                 port:
-                  number: 3000 # port number that internal service exposes
+                  number: 80 # port number that internal service exposes
           - path: /e($|/)(.*)
             pathType: Prefix
             backend:
